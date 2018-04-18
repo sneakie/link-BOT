@@ -20,11 +20,11 @@ namespace sneakie_BOT
         private IServiceProvider _services;
 
         //add the id to your default channel in discord(need developer on in discord to be able to do this
-        public ulong DefaultChannel = 90647294138912768;
+        public ulong DefaultChannel = 12345;
         //add the id to the channel you want the bot to copy&paste the allowedurls
-        public ulong LinkChannel = 435210055705690128;
+        public ulong LinkChannel = 12345;
         //The server admin's id
-        string adminId = "90646566313938944";
+        string adminId = "##############";
         
         public string BotName = "sneakie-BOT";
         static Random Dice = new Random();
