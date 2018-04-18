@@ -19,13 +19,15 @@ namespace sneakie_BOT
         private CommandService _commands;
         private IServiceProvider _services;
 
-        //add the id to your default channel in discord(need developer on in discord to be able to do this
-        public ulong DefaultChannel = 12345;
+        public SocketUserMessage currentUserMessage;
+
+        //add the id to your default channel in discord(need developer on in discord to be able to do this)
+        public ulong DefaultChannel = 90647294138912768;
         //add the id to the channel you want the bot to copy&paste the allowedurls
-        public ulong LinkChannel = 12345;
+        public ulong LinkChannel = 435210055705690128;
         //The server admin's id
-        string adminId = "##############";
-        
+        string adminId = "############";
+
         public string BotName = "sneakie-BOT";
         static Random Dice = new Random();
 
@@ -80,11 +82,17 @@ namespace sneakie_BOT
 
         }
 
+        public void botReply(string msg)
+        {
+            currentUserMessage.Channel.SendMessageAsync(msg, false);
+        }
+
         private Task MessageReceived(SocketMessage arg)
         {
-                        
+
             // declare message
             var socketMessage = arg as SocketUserMessage;
+            currentUserMessage = socketMessage;
 
             //  if message is empty/null or its from - ignore it
             if (socketMessage is null || socketMessage.Author.IsBot) return Task.CompletedTask;
@@ -96,19 +104,18 @@ namespace sneakie_BOT
             string userName = socketMessage.Author.Username;
             string userNameWithTag = socketMessage.Author.Mention;
 
-            // Formatting for "roll" command
-            string rolled = " rolled ";
 
-            //Making ulong of the author.id into a string
-            ulong admin = socketMessage.Author.Id;
-            string admin1 = admin.ToString();
+            //strings for roll command and also string/ulongs for admin check.
+            string rolled = " rolled ";
+            ulong ulongMsgAuthorCheck= socketMessage.Author.Id;
+            string msgAuthorCheck = ulongMsgAuthorCheck.ToString();
             var embed = new EmbedBuilder();
 
             // bool for confirmation if author is an admin or not
             bool isAdmin = false;
             
             //confirmation
-            if(admin1 == adminId)
+            if(msgAuthorCheck == adminId)
             {
                 isAdmin = true;
             }
@@ -119,46 +126,46 @@ namespace sneakie_BOT
                 case "!quit":
                     if (isAdmin)
                     {
-                        socketMessage.Channel.SendMessageAsync("sneakie-BOT turning off");
+                        botReply("sneakie-BOT turning off");
                         System.Environment.Exit(1);
                     }
                     break;
 
                 case "!twotime":
-                    socketMessage.Channel.SendMessageAsync("Stupid fucking mistakes man, stupid fucking mistakes..");
+                    botReply("Stupid fucking mistakes man, stupid fucking mistakes..");
                     break;
 
                 case "!mladris":
-                    socketMessage.Channel.SendMessageAsync("If they cant beat me, they deserve to get raped - Mladris");
+                    botReply("If they cant beat me, they deserve to get raped - Mladris");
                     break;
 
                 case "!addeponken":
 
                     embed.ImageUrl = "https://i.imgur.com/1KOA8QQ.png";
-                    socketMessage.Channel.SendMessageAsync(@"https://i.imgur.com/1KOA8QQ.png", false, embed);
+                    botReply(@"https://i.imgur.com/1KOA8QQ.png");
                     break;
 
                 case "!renuilz":
-                    socketMessage.Channel.SendMessageAsync("5sek arrow, HORUNGE!");
+                    botReply("5sek arrow, HORUNGE!");
                     break;
 
                 case "!jhoey":
-                    socketMessage.Channel.SendMessageAsync("12 btw xd");
+                    botReply("12 btw xd");
                     break;
 
                 case "!roll":
                     int diceRoll = Dice.Next(0, 101);
-                    socketMessage.Channel.SendMessageAsync(userNameWithTag + rolled + diceRoll.ToString());
+                    botReply(userNameWithTag + rolled + diceRoll.ToString());
                     socketMessage.DeleteAsync();
                     break;
                 case "!pepsidood":
                     embed.ImageUrl = "https://i.imgur.com/maopPX9.jpg";
-                    socketMessage.Channel.SendMessageAsync(@"https://i.imgur.com/maopPX9.jpg", false, embed);
+                    botReply(@"https://i.imgur.com/maopPX9.jpg");
                     break;
 
                 case "!commands":
                     socketMessage.Author.SendMessageAsync("Hello! \n" +
-                        "These are my commands: \n \n" +
+                        "These are my commands: \n \n" + 
                         "!quit(admin only) \n" +
                         "!twotime \n" +
                         "!mladris \n" +
@@ -167,6 +174,7 @@ namespace sneakie_BOT
                         "!jhoey \n" +
                         "!roll \n" +
                         "!pepsidood \n");
+                    socketMessage.DeleteAsync();
                     break;
             }
 
@@ -238,7 +246,6 @@ namespace sneakie_BOT
             var channel = guild.GetTextChannel(DefaultChannel);
             await channel.SendMessageAsync($"Welcome, {user.Mention}");
         }
-
         private Task log(LogMessage arg)
         {
             Console.WriteLine(arg);
